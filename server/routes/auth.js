@@ -34,6 +34,36 @@ router.get("/init", (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const result = await prisma.user.findUnique({
+    where: {
+      username: username,
+    },
+  });
+
+  if (result) {
+    const isPasswordSame = bcrypt.compareSync(password, result.password);
+
+    if (isPasswordSame) {
+      res
+        .status(200)
+        .cookie(
+          "token",
+          jwt.sign(
+            { username: result?.username, id: result?.id },
+            process.env.JWT_SECRET
+          )
+        )
+        .json({ message: "Login Successful" });
+    } else {
+      res.status(401).json({ message: "Incorrect Password" });
+    }
+  } else {
+    res.status(401).json({ message: "username or password is incorrect!" });
+  }
+});
+
 router.post("/register", async (req, res) => {
   const { username, password } = req.body;
   const hashedPassword = bcrypt.hashSync(password, bcryptSalt);
