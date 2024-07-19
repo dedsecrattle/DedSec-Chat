@@ -34,6 +34,11 @@ router.get("/init", (req, res) => {
   }
 });
 
+router.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged Out Successfully" });
+});
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const result = await prisma.user.findUnique({
