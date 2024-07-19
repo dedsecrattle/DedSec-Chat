@@ -1,15 +1,32 @@
 import { FormEvent, useRef } from "react";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const handleRegister = (event: FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleRegister = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(usernameRef.current?.value);
-    console.log(passwordRef.current?.value);
+    const username = usernameRef.current?.value;
+    const password = passwordRef.current?.value;
+    axios
+      .post(
+        "http://localhost:3000/auth/register",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((response) => {
+        console.log(document.cookie);
+      });
   };
 
   return (
