@@ -1,51 +1,28 @@
-import { useNavigate } from "react-router-dom";
-import Header from "./components/Header";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { IoLogOut } from "react-icons/io5";
+import { UserContext } from "./context/UserContext";
+import { useContext } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
-  const navigate = useNavigate();
-  const [userName, setUsername] = useState("");
-  const [id, setId] = useState("");
-
-  async function handleLogout() {
-    navigate("/login");
-    await axios.get("http://localhost:3000/auth/logout", {
-      withCredentials: true,
-    });
-    setUsername("");
-    setId("");
-  }
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/auth/init", {
-        withCredentials: true,
-      })
-      .then((response) => {
-        if (response.data.login) {
-          setUsername(response.data.data.username);
-          setId(response.data.data.id);
-        } else {
-          navigate("/login");
-        }
-      });
-  }, [navigate]);
-
+  const { username } = useContext(UserContext);
   return (
-    <div className="flex flex-col gap-14 items-center font-poppins font-bold h-screen w-screen justify-center bg-slate-100">
-      <Header />
-      <p className="text-2xl font-bold">
-        Hii {userName}, Welcome to Dedsec Chat !
-        <span className="animate-bounce">👋</span>
-      </p>
-      <button
-        className="flex items-center text-xl gap-4 bg-black text-white p-4 rounded-lg"
-        onClick={handleLogout}
-      >
-        <IoLogOut />
-        <p>Logout</p>
-      </button>
+    <div className="p-4 h-screen flex items-center justify-center">
+      <Routes>
+        <Route
+          path="/"
+          element={username ? <Home /> : <Navigate to={"/login"} />}
+        />
+        <Route
+          path="/login"
+          element={username ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/signup"
+          element={username ? <Navigate to="/" /> : <Register />}
+        />
+      </Routes>
     </div>
   );
 }

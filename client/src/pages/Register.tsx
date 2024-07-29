@@ -1,14 +1,13 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useContext, useRef } from "react";
 import Header from "../components/Header";
-import { Link, useNavigate } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const Register = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
+  const { setUsername, setId } = useContext(UserContext);
 
   const handleRegister = async (event: FormEvent) => {
     event.preventDefault();
@@ -23,16 +22,11 @@ const Register = () => {
         },
         { withCredentials: true }
       )
-      .then(() => navigate("/"));
+      .then((data) => {
+        setUsername(data.data.username);
+        setId(data.data.id);
+      });
   };
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center">
-        <p className="text-3xl font-extrabold">{error}</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center h-screen w-screen justify-center gap-16 bg-slate-100">

@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
             process.env.JWT_SECRET
           )
         )
-        .json({ message: "Login Successful" });
+        .json({ username: result.username, id: result.id });
     } else {
       res.status(401).json({ message: "Incorrect Password" });
     }
@@ -87,7 +87,7 @@ router.post("/register", async (req, res) => {
         process.env.JWT_SECRET
       )
     )
-    .json(result);
+    .json({ username: result.username, id: result.username });
 });
 
 router.get("/getUsers", async (req, res) => {

@@ -1,14 +1,13 @@
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useContext, useRef } from "react";
 import Header from "../components/Header";
-import { Link, useNavigate } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState("");
-
-  const navigate = useNavigate();
+  const { setUsername, setId } = useContext(UserContext);
 
   const handleRegister = async (event: FormEvent) => {
     event.preventDefault();
@@ -23,7 +22,10 @@ const Login = () => {
         },
         { withCredentials: true }
       )
-      .then(() => navigate("/"));
+      .then((data) => {
+        setUsername(data.data.username);
+        setId(data.data.id);
+      });
   };
 
   return (
