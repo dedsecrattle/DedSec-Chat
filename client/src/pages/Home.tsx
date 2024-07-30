@@ -5,9 +5,11 @@ import axios from "axios";
 import { IoLogOut } from "react-icons/io5";
 import { Contacts } from "../components/Contacts";
 import ChatBox from "../components/ChatBox";
+import { SocketContext } from "../context/SocketContext";
 
 export default function Home() {
   const { username, setId, setUsername } = useContext(UserContext);
+  const { onlineUsers } = useContext(SocketContext);
   async function handleLogout() {
     await axios.get("http://localhost:3000/auth/logout", {
       withCredentials: true,
@@ -22,8 +24,8 @@ export default function Home() {
         Hii {username}, Welcome to Dedsec Chat !
         <span className="animate-bounce">👋</span>
       </p>
-      <div className="flex gap-4 h-full w-full bg-red-400 items-center justify-center">
-        <Contacts />
+      <div className="flex gap-4 h-full bg-slate-300 items-center justify-center w-1/2 p-2 rounded-2xl">
+        <Contacts users={onlineUsers.filter((item) => item != username)} />
         <ChatBox />
       </div>
       <button

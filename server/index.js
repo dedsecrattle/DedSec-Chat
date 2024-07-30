@@ -10,6 +10,8 @@ configDotenv();
 
 const app = express();
 
+const userSocketMap = {};
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -22,10 +24,15 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(
-    "A new Client Connected! with username",
-    socket.handshake.query.username
-  );
+  const userId = socket.handshake.query.username;
+  if (userId != "undefined") userSocketMap[userId] = socket.id;
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  socket.on("disconnect", () => {
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
 });
 
 app.use(

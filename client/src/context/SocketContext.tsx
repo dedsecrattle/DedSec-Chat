@@ -13,7 +13,7 @@ interface SocketContextType {
   onlineUsers: string[];
 }
 
-const SocketContext = createContext<SocketContextType | undefined>({
+export const SocketContext = createContext<SocketContextType>({
   socket: null,
   onlineUsers: [],
 });
@@ -53,7 +53,7 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({
         setSocket(null);
       }
     }
-  }, [username, id]);
+  }, [username]);
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers }}>
